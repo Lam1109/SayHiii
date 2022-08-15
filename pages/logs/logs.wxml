@@ -1,6 +1,33 @@
 <!--logs.wxml-->
-<view class="container log-list">
-  <block wx:for="{{logs}}" wx:for-item="log">
-    <text class="log-item">{{index + 1}}. {{log}}</text>
-  </block>
+<view class="box-out" bindtouchstart='startFun' bindtouchmove='showFun' bindtouchend='hideFun'>
+  <view class="content">
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view>日志内容</view>
+    <view bindtap='clickFun'>点击日志内容1</view>
+    <view>点击日志内容2</view>
+    <view>点击日志内容3</view>
+    <view>点击日志内容4</view>
+  </view>
+  <view class="modalDetail" hidden="{{isShow}}"></view>
+    <scroll-view class="modalDetail__box" scroll-y="{{true}}" style='height: 600rpx;background:#fff;transform: translateY(600px);' animation="{{animationData}}">
+      你的展示内容写这里你的展示内容写这里 你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里你的展示内容写这里
+    </scroll-view>
 </view>

@@ -18,5 +18,17 @@
     <view 
     class="calendar-day" wx:for="{{calendars}}" wx:key="key" wx:item="item" wx:for-index="index">{{item.date}}</view>
   </view>
+
+  <view class="box-out" bindtouchstart='startFun' bindtouchmove='showFun' bindtouchend='hideFun'>
+  <view class="content">
+    <button bindtap='clickFun'>点击日志内容1</button>
+  </view>
+  <view class="modalDetail" hidden="{{isShow}}"></view>
+    <scroll-view class="modalDetail__box" scroll-y="{{true}}" style='height: 600rpx;background:#fff;transform: translateY(600px);' animation="{{animationData}}">
+      <input type="emoji" placeholder="这是一个带有表情的输入框" />
+      <button bindtap='clickFun'>点击日志内容1</button>
+    </scroll-view>
+</view>
+
 </view>
 </view>
