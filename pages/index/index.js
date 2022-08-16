@@ -8,9 +8,10 @@ Page({
    * 页面的初始数据
    */
   data: {
+    day:'',
     animationData:'',
     startclientY:'',
-    isShow: true,//底部遮罩
+    isHidden: true,//底部遮罩
     ifStop: true //阻止多次同方向滑动，多次动画效果
   },
 
@@ -64,15 +65,19 @@ Page({
   },
 
   // 点击弹出划出层
-  clickFun: function () {
-    console.log(this.data.ifStop,'显示')
-    if(!this.data.ifStop){
+  clickFun: function (e) {
+    var date = e.currentTarget.dataset['date'];
+    this.setData({
+      day: date
+    })
+    //console.log(this.data.ifStop,'显示');
+    if(!this.data.ifStop || date == "" ){
       return;
     }
     console.log('move')
     // 显示遮罩层
     var animation = wx.createAnimation({
-      duration: 500,
+      duration: 400,
       timingFunction: "linear",
       delay: 0
     })
@@ -85,7 +90,7 @@ Page({
       animation.translateY(0).step()
       this.setData({
         animationData: animation.export(),
-        isShow: false
+        isHidden: false
       })
     }.bind(this), 500)
   },
@@ -99,7 +104,7 @@ Page({
   // 下滑取消弹出层
   showFun: function (e) {
     if (e.touches[0].clientY > this.data.startclientY){
-      console.log(this.data.ifStop,'隐藏')
+      //console.log(this.data.ifStop,'隐藏')
       if(this.data.ifStop){
         return;
       }
@@ -119,7 +124,7 @@ Page({
         animation.translateY(600).step()
         this.setData({
           animationData: animation.export(),
-          isShow: true
+          isHidden: true
         })
       }.bind(this), 500)
     }

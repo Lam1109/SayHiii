@@ -33,6 +33,15 @@
   line-height: 40px;
 }
 
+.calendar-block-title{
+  margin-top: 10px;
+  width: 350px;
+  display: flex;
+  flex-direction:row;
+  flex-wrap: wrap;
+  padding-left: 5px;
+  font-weight: 900;
+}
 .calendar-block{
   margin-top: 10px;
   width: 350px;
@@ -42,14 +51,38 @@
   padding-left: 5px;
 }
 .calendar-day{
-  width: 45px;
-  height: 45px;
-  line-height: 45px;
-  margin-right: 5px;
-  margin-top: 20rpx;
-  text-align: center;
-  font-size: 18px;
-}
+    border-radius: 50%;
+    width: 12%;
+    height: 80rpx;
+    line-height: 70rpx;
+    margin-left: 15rpx;
+    margin-top: 20rpx;
+    text-align: center;
+    font-size: 18px;
+  }
+ .bubble{ 
+  position: relative;
+  overflow: hidden;
+ }
+ .bubble:after{
+  content: "";
+  background: #FFB6C1;
+  position: absolute; 
+  width: 750rpx;
+  height: 750rpx;
+  left: calc(50% - 375rpx);
+  top: calc(50% - 375rpx);
+  opacity: 0;
+  margin: auto;
+  border-radius: 50%;
+  transform: scale(1);
+  transition: all 1.0s ease-in-out;
+ }
+ .bubble:active:after {
+  transform: scale(0);
+  opacity: 1;
+  transition: 0s;
+ }
 .modalDetail{
   position: fixed;
   left: 0;
@@ -67,3 +100,38 @@
   height: auto;
   z-index: 10000;
 }
+.subtitle{
+  font-size: 20px;
+  text-align: center;
+}
+.sub-button-pink{
+  width: 200rpx;
+  bottom:5rpx;
+  display: block;
+  color: #feeef5;
+  border: solid 1px #d2729e;
+  background: #f895c2;
+  background: -webkit-gradient(linear, left top, left bottom, from(#feb1d3), to(#f171ab));
+  background: -moz-linear-gradient(top,  #feb1d3,  #f171ab);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#feb1d3', endColorstr='#f171ab');
+}
+.sub-button-pink:hover {
+  background: #d57ea5;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f4aacb), to(#e86ca4));
+  background: -moz-linear-gradient(top,  #f4aacb,  #e86ca4);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f4aacb', endColorstr='#e86ca4');
+  }
+.sub-button-pink:active {
+  color: #f3c3d9;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f171ab), to(#feb1d3));
+  background: -moz-linear-gradient(top,  #f171ab,  #feb1d3);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f171ab', endColorstr='#feb1d3');
+  }
+  
+  .title{
+    display: flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+    font-size: 20px;
+    font-weight: 900;
+  }
