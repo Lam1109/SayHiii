@@ -1,7 +1,0 @@
-<view class="weather-box">
-    <image src="{{todyIcon}}" class="weather-icon"></image>
-    <view class="weather-info">
-        <view class="view1">{{today.cond_txt}}</view>
-        <view class="view2">{{today.tmp}}℃</view>
-    </view>
-</view>

@@ -135,3 +135,13 @@
     font-size: 20px;
     font-weight: 900;
   }
+  .weather-icon-view{
+    display:inline-block;
+  }
+  .weather-icon{
+    width: 50rpx;
+    height: 50rpx;
+    color: yellow;
+  }
+
+ 

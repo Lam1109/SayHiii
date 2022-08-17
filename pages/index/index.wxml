@@ -25,7 +25,13 @@
   <view class="modalDetail" hidden="{{isHidden}}"></view>
     <scroll-view class="modalDetail__box" scroll-y="{{true}}" style='height: 700rpx;background:#fff;transform: translateY(600px);' animation="{{animationData}}">
       <view class="subtitle">{{year}}年{{month}}月{{day}}日</view>
-      <view> {{province}}省{{city}}{{district}} </view>
+      <view> {{province}}{{city}}{{district}} </view>
+      <view>温度：{{todayWeather.temp}}℃</view>
+      <view>体感温度：{{todayWeather.feelsLike}}℃</view>
+      <view class="weather-icon-view">
+        <view>天气：{{todayWeather.text}}</view>
+        <image class=".weather-icon" src='{{todayIcon}}'></image>
+      </view>
       <button class="sub-button-pink">确认</button>
     </scroll-view>
 </view>

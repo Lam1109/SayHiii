@@ -1,6 +1,7 @@
 var Calendar = require("../../service/Calendar.js");
 var QQMapWX = require("../../libs/qqmap-wx-jssdk.min.js")
 var qqmapsdk;
+var latitude, longitude;
 const app = getApp();
 
 Page({
@@ -15,7 +16,9 @@ Page({
     ifStop: true, //阻止多次同方向滑动，多次动画效果
     province: '',
     city: '',
-    district: ''
+    district: '',
+    todayWeather: '',
+    todayIcon: ''
   },
 
   /**
@@ -28,8 +31,10 @@ Page({
     wx.getLocation({
       type: 'wgs84',
       success (res) {
-        console.log('纬度' + res.latitude)
-        console.log('经度' + res.longitude)
+        latitude = res.latitude;
+        longitude = res.longitude;
+        console.log('纬度' + latitude)
+        console.log('经度' + longitude)
       }
      })
     let nowDate = new Date()
@@ -68,6 +73,7 @@ Page({
   },
   // 点击日期弹出划出层
   clickFun: function (e) {
+    var key = 'd3a8393e7d4241f29750a1b1735ed000';
     var that = this;
     var date = e.currentTarget.dataset['date'];
     qqmapsdk.reverseGeocoder({
@@ -80,6 +86,22 @@ Page({
         })
       }
      })
+     var url = 'https://devapi.qweather.com/v7/weather/now?location=' + longitude + ',' + latitude  + '&key='+key;
+     console.log(url)
+      wx.request({
+        url: url, 
+        data: {},
+        method: 'GET',
+        success: function (res) {
+          console.log(res);
+          var todayWeather = res.data.now;//今天天气
+          console.log(todayWeather)
+          that.setData({
+            todayWeather: todayWeather,
+            todayIcon: '../../icons/' + todayWeather.icon + '.svg'
+          });
+        }
+    })
     this.setData({
       day: date
     })
