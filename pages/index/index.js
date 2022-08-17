@@ -1,9 +1,9 @@
-// pages/daka/daka.js
 var Calendar = require("../../service/Calendar.js");
+var QQMapWX = require("../../libs/qqmap-wx-jssdk.min.js")
+var qqmapsdk;
 const app = getApp();
 
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -12,32 +12,37 @@ Page({
     animationData:'',
     startclientY:'',
     isHidden: true,//底部遮罩
-    ifStop: true //阻止多次同方向滑动，多次动画效果
+    ifStop: true, //阻止多次同方向滑动，多次动画效果
+    province: '',
+    city: '',
+    district: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    qqmapsdk = new QQMapWX({
+      key: '44JBZ-D2TRD-TQH4B-PRHD7-3NCGV-XLFI2'
+    });
+    wx.getLocation({
+      type: 'wgs84',
+      success (res) {
+        console.log('纬度' + res.latitude)
+        console.log('经度' + res.longitude)
+      }
+     })
     let nowDate = new Date()
     this.initCalendar(nowDate)//加载日历
   },
-
   /**
-   * 初始化日历，
-   * signDates ： 已经签到的日期，一般在月份切换的时候从后台获取日期，
-   * 然后在获取日历数据时，进行数据比对处理；
+   * 初始化日历
    * */
   initCalendar: function (paramDate) {
-
-    //当前年月日
-    var now = new Date();//当前时间
     //星期
-    var days = ["日", "一", "二", "三", "四", "五", "六"];
-
-    //签到日历数据的生成
-    var calendars = Calendar.getSignCalendar(paramDate);
-
+    var days = ["日", "一", "二", "三", "四", "五", "六"]
+    //日历数据的生成
+    var calendars = Calendar.getCalendar(paramDate);
     this.setData({
       year: paramDate.getFullYear(),
       month: paramDate.getMonth() + 1,
@@ -47,7 +52,6 @@ Page({
       nextMonth: ">"
     });
   },
-
   //上个月
   preMonth: function () {
     var dataYear = this.data.year;
@@ -55,7 +59,6 @@ Page({
     var paramDate = Calendar.parseDate(dataYear, dataMonth);
     this.initCalendar(paramDate);
   },
-
   //下个月
   nextMonth: function () {
     var dataYear = this.data.year;
@@ -63,10 +66,20 @@ Page({
     var paramDate = Calendar.parseDate(dataYear, dataMonth);
     this.initCalendar(paramDate);
   },
-
-  // 点击弹出划出层
+  // 点击日期弹出划出层
   clickFun: function (e) {
+    var that = this;
     var date = e.currentTarget.dataset['date'];
+    qqmapsdk.reverseGeocoder({
+      success: function(res) {
+        console.log(res);
+        that.setData({
+          province: res.result.address_component.province,
+          city: res.result.address_component.city,
+          district: res.result.address_component.district  
+        })
+      }
+     })
     this.setData({
       day: date
     })
@@ -74,7 +87,6 @@ Page({
     if(!this.data.ifStop || date == "" ){
       return;
     }
-    console.log('move')
     // 显示遮罩层
     var animation = wx.createAnimation({
       duration: 400,
@@ -108,7 +120,6 @@ Page({
       if(this.data.ifStop){
         return;
       }
-      console.log('move')
       // 隐藏遮罩层
       var animation = wx.createAnimation({
         duration: 500,

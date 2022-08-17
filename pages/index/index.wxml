@@ -25,7 +25,7 @@
   <view class="modalDetail" hidden="{{isHidden}}"></view>
     <scroll-view class="modalDetail__box" scroll-y="{{true}}" style='height: 700rpx;background:#fff;transform: translateY(600px);' animation="{{animationData}}">
       <view class="subtitle">{{year}}年{{month}}月{{day}}日</view>
-      <view> Are you sure todayyy? </view>
+      <view> {{province}}省{{city}}{{district}} </view>
       <button class="sub-button-pink">确认</button>
     </scroll-view>
 </view>

@@ -83,7 +83,7 @@ function parseDate(year, month, date){
 }
 
 module.exports = {
-  getSignCalendar: getSignCalendar,
+  getCalendar: getSignCalendar,
   getMaxDate: getMaxDate,
   parseDate: parseDate
 }
