@@ -9,7 +9,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    day:'',
+    day:'', //记录day
+    today: '', //today
     animationData:'',
     startclientY:'',
     isHidden: true,//底部遮罩
@@ -35,10 +36,42 @@ Page({
         longitude = res.longitude;
         console.log('纬度' + latitude)
         console.log('经度' + longitude)
+        var key = 'd3a8393e7d4241f29750a1b1735ed000';
+        var url = 'https://devapi.qweather.com/v7/weather/now?location=' + longitude + ',' + latitude  + '&key='+key;
+        console.log(url)
+         wx.request({
+           url: url, 
+           data: {},
+           method: 'GET',
+           success: function (res) {
+             console.log(res);
+             var todayWeather = res.data.now;//今天天气
+             console.log(todayWeather)
+             that.setData({
+               todayWeather: todayWeather,
+               todayIcon: '../../icons/weather/' + todayWeather.icon + '.svg'
+             });
+           }
+       })
       }
      })
+  
+     var that = this;
+     qqmapsdk.reverseGeocoder({
+       success: function(res) {
+         console.log(res);
+         that.setData({
+           province: res.result.address_component.province,
+           city: res.result.address_component.city,
+           district: res.result.address_component.district  
+         })
+       }
+      })
     let nowDate = new Date()
     this.initCalendar(nowDate)//加载日历
+    this.setData({
+      today: nowDate.getDay
+    })
   },
   /**
    * 初始化日历
@@ -73,35 +106,7 @@ Page({
   },
   // 点击日期弹出划出层
   clickFun: function (e) {
-    var key = 'd3a8393e7d4241f29750a1b1735ed000';
-    var that = this;
     var date = e.currentTarget.dataset['date'];
-    qqmapsdk.reverseGeocoder({
-      success: function(res) {
-        console.log(res);
-        that.setData({
-          province: res.result.address_component.province,
-          city: res.result.address_component.city,
-          district: res.result.address_component.district  
-        })
-      }
-     })
-     var url = 'https://devapi.qweather.com/v7/weather/now?location=' + longitude + ',' + latitude  + '&key='+key;
-     console.log(url)
-      wx.request({
-        url: url, 
-        data: {},
-        method: 'GET',
-        success: function (res) {
-          console.log(res);
-          var todayWeather = res.data.now;//今天天气
-          console.log(todayWeather)
-          that.setData({
-            todayWeather: todayWeather,
-            todayIcon: '../../icons/' + todayWeather.icon + '.svg'
-          });
-        }
-    })
     this.setData({
       day: date
     })

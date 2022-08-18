@@ -2,7 +2,6 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs"
-
   ],
   "permission": {
     "scope.userLocation": {
@@ -15,5 +14,23 @@
     "navigationBarTitleText": "SayHiii",
     "navigationBarTextStyle": "black"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+
+  "tabBar": {
+
+    "list": [
+      {
+      "pagePath": "pages/logs/logs",
+      "text": "test",
+      "iconPath": "icons/content/mine.png",
+      "selectedIconPath": "icons/content/mine.png"
+    },
+    {
+      "pagePath": "pages/index/index",
+      "text": "index",
+      "iconPath": "icons/content/mine.png",
+      "selectedIconPath": "icons/content/mine.png"
+    }
+  ]
+  }
 }

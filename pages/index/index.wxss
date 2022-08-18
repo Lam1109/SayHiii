@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   position: relative;
+  border-radius: 10%;
 }
 .content{
   position: absolute;
@@ -13,11 +14,19 @@
 .color-red{
   color: red;
 }
-
+.line-space{
+  height: 50rpx;
+}
 .cur-date{
   text-decoration: underline;
 }
 
+.background-pink{
+  background-color: #FFB6C1;
+}
+
+.background-none{
+}
 .curdate-block{
   display: flex;
   justify-content: space-between;
@@ -50,6 +59,7 @@
   flex-wrap: wrap;
   padding-left: 5px;
 }
+
 .calendar-day{
     border-radius: 50%;
     width: 12%;
@@ -135,13 +145,30 @@
     font-size: 20px;
     font-weight: 900;
   }
-  .weather-icon-view{
-    display:inline-block;
+  .weather-block{
+    margin: auto;
+    margin-top: 30rpx;
+    display: flex;
+    justify-content: space-between;
+    background-color: #FFFFFF;
+    width: 95%;
+    height: 100%;
+    position: relative;
+    border-radius: 5%;
   }
   .weather-icon{
-    width: 50rpx;
-    height: 50rpx;
-    color: yellow;
+    width: 100rpx;
+    height: 100rpx;
+    margin-right: 7%;
+    margin-top: 20rpx;
+  }
+  .weather-temp{
+    font-size: 30px;
+  }
+
+  .weather-text-block{
+    margin-top: 10rpx;
+    margin-left: 7%;
   }
 
  
