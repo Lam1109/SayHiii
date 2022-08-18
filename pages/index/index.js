@@ -3,6 +3,7 @@ var QQMapWX = require("../../libs/qqmap-wx-jssdk.min.js")
 var qqmapsdk;
 var latitude, longitude;
 const app = getApp();
+var openId;
 
 Page({
   /**
@@ -25,9 +26,19 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    qqmapsdk = new QQMapWX({
-      key: '44JBZ-D2TRD-TQH4B-PRHD7-3NCGV-XLFI2'
-    });
+    this.getUserOpenId();
+    this.initQQMap();
+    this.getLocationWeather();
+    let nowDate = new Date()
+    this.setData({
+      today: nowDate.getDate()
+    })
+    this.initCalendar(nowDate)//加载日历
+  },
+
+
+  getLocationWeather: function(){
+    var that = this;
     wx.getLocation({
       type: 'wgs84',
       success (res) {
@@ -54,29 +65,45 @@ Page({
        })
       }
      })
-  
-     var that = this;
-     qqmapsdk.reverseGeocoder({
-       success: function(res) {
-         console.log(res);
-         that.setData({
-           province: res.result.address_component.province,
-           city: res.result.address_component.city,
-           district: res.result.address_component.district  
-         })
-       }
-      })
-    let nowDate = new Date()
-    console.log(nowDate.getDate())
-    this.setData({
-      today: nowDate.getDate()
-    })
-    this.initCalendar(nowDate)//加载日历
-
   },
-  /**
-   * 初始化日历
-   * */
+  // init QQmap
+  initQQMap:function(){
+    var that = this;
+    qqmapsdk = new QQMapWX({
+      key: '44JBZ-D2TRD-TQH4B-PRHD7-3NCGV-XLFI2'
+    });
+    qqmapsdk.reverseGeocoder({
+      success: function(res) {
+        console.log(res);
+        that.setData({
+          province: res.result.address_component.province,
+          city: res.result.address_component.city,
+          district: res.result.address_component.district  
+        })
+      }
+     })
+  },
+  // 获取 openid
+  getUserOpenId: function () {
+    var that = this;
+    wx.getUserInfo({
+      success: function(res) {
+        // res.data 是包含以上定义的两条记录的数组
+        //console.log(res)
+      }
+    })
+    wx.login({
+      //成功放回
+      success: function(res) {
+        // res.data 是包含以上定义的两条记录的数组
+       //console.log(res)
+        that.setData({
+          openId: res.code
+        })
+      }
+    })
+  },
+  //初始化日历
   initCalendar: function (paramDate) {
     //星期
     var days = ["日", "一", "二", "三", "四", "五", "六"]
@@ -172,6 +199,7 @@ Page({
   hideFun: function (e) {
     console.log(e,'end')
   },
+  
 
   /**
    * 生命周期函数--监听页面初次渲染完成

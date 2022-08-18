@@ -22,7 +22,7 @@
 }
 
 .background-pink{
-  background-color: #7FFFD4;
+  background-color: #f171ab;
 }
 
 .curdate-block{

@@ -9,7 +9,7 @@
 
 <view class="line-space"></view>
 <view class="container">
-    <image style="height: 900rpx; width: 90%;" src='/imgs/background.jpg'></image>
+    <image style="height: 900rpx; width: 90%;" src='/imgs/background.png'></image>
   <view class='content'>
   <!--当前日期-->
   <view class="curdate-block">
