@@ -25,8 +25,7 @@
 
   <!-- 日历-->
   <view class="calendar-block">
-    <view 
-    class="calendar-day bubble" wx:for="{{calendars}}" wx:key="key" wx:item="item" wx:for-index="index" bindtap='clickFun' data-date="{{item.date}}">{{item.date}} 
+    <view class="calendar-day bubble {{today==item.date? 'background-pink': ''}}" wx:for="{{calendars}}" wx:key="key" wx:item="item" wx:for-index="index" bindtap='clickFun' data-date="{{item.date}}">{{item.date}}
   </view>
     
   </view>

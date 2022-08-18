@@ -10,7 +10,6 @@ Page({
    */
   data: {
     day:'', //记录day
-    today: '', //today
     animationData:'',
     startclientY:'',
     isHidden: true,//底部遮罩
@@ -68,10 +67,12 @@ Page({
        }
       })
     let nowDate = new Date()
-    this.initCalendar(nowDate)//加载日历
+    console.log(nowDate.getDate())
     this.setData({
-      today: nowDate.getDay
+      today: nowDate.getDate()
     })
+    this.initCalendar(nowDate)//加载日历
+
   },
   /**
    * 初始化日历

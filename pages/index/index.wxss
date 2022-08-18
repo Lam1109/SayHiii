@@ -22,11 +22,9 @@
 }
 
 .background-pink{
-  background-color: #FFB6C1;
+  background-color: #7FFFD4;
 }
 
-.background-none{
-}
 .curdate-block{
   display: flex;
   justify-content: space-between;
