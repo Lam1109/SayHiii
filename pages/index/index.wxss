@@ -109,13 +109,16 @@
   z-index: 10000;
 }
 .subtitle{
-  font-size: 20px;
+  margin-top: 5%;
+  font-size: 30px;
+  font-weight: bold;
+  color:  #f895c2;
   text-align: center;
 }
 .sub-button-pink{
+  margin-top: 10%;
   width: 200rpx;
   bottom:5rpx;
-  display: block;
   color: #feeef5;
   border: solid 1px #d2729e;
   background: #f895c2;
@@ -169,4 +172,8 @@
     margin-left: 7%;
   }
 
- 
+  .tips-pink{
+    color: #f171ab;
+    margin-top: 3%;
+    font-size: 20px;
+  }

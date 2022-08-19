@@ -1,7 +1,7 @@
 <wxs module="indexUtils" src ="index.wxs"/>
 <view class="weather-block">
     <view class="weather-text-block">
-      <view>{{district}} </view>
+      <view>{{location.district}} </view>
       <view class="weather-temp">{{todayWeather.temp}}℃</view>
       <view>{{todayWeather.text}}</view>
     </view>
@@ -21,30 +21,24 @@
   
   <!-- 星期-->
   <view class="calendar-block-title">
-    <view class="calendar-day {{(item == '日' || item == '六')?'color-red':'color-gray'}}" wx:for="{{days}}" wx:key="key" wx:item="item" wx:for-index="index">{{item}}</view>
+    <view class="calendar-day {{(item == '日' || item == '六')?'color-red':'color-gray'}}" wx:for="{{weekDays}}" wx:key="key" wx:item="item" wx:for-index="index">{{item}}</view>
   </view>
 
   <!-- 日历-->
   <view class="calendar-block">
-    <view class="calendar-day bubble {{today==item.date&&thisMonth==month&&thisYear==year? 'background-pink': ''}}"  wx:for="{{calendars}}" wx:key="key" wx:item="item" wx:for-index="index" bindtap='clickFun' data-date="{{item.date}}">{{item.date}}
+    <view class="calendar-day bubble {{today==item.date&&thisMonth==date.month&&thisYear==date.year? 'background-pink': ''}}  {{isLoged ? 'background-pink': ''}}"  wx:for="{{calendars}}" wx:key="key" wx:item="item" wx:for-index="index" bindtap='clickFun' data-clicked-date="{{item.date}}" >{{item.date}} 
   </view>
     
   </view>
   <view class="box-out" bindtouchstart='startFun' bindtouchmove='showFun' bindtouchend='hideFun'>
   <view class="modalDetail" hidden="{{isHidden}}"></view>
     <scroll-view class="modalDetail__box" scroll-y="{{true}}" style='height: 700rpx;background:#fff;transform: translateY(600px);' animation="{{animationData}}">
-      <view class="subtitle">{{date.year}}年{{date.month}}月{{day}}日</view>
-      <view> {{province}}{{city}}{{district}} </view>
-      <view>温度：{{todayWeather.temp}}℃</view>
-      <view>体感温度：{{todayWeather.feelsLike}}℃</view>
-      <view class="weather-icon-view">
-        <view >天气：{{todayWeather.text}}</view>
-        <image class=".weather-icon" src='{{todayIcon}}'></image>
-      </view>
-      <view wx:for="{{dbInqueryRes}}" wx:key="key" wx:item="item" wx:for-index="index">{{item.date}}@{{item.month}}</view>
-      <view wx:for="{{dbInqueryResArr}}" wx:key="key" wx:item="item" wx:for-index="index">{{item}}</view>
-      <button data-weather="{{todayWeather.text}}" data-year="{{year}}"  data-month="{{month}}" data-date="{{day}}"  data-userOpenId="{{userOpenId}}" bindtap='dbAddOrUpdate' class="sub-button-pink">确认</button>
+      <view class="subtitle">{{date.year}}年{{date.month}}月{{clickedDate}}日</view>
+      <view class="tips-pink"> 你是否要设置{{clickedDate}}日为{{date.month}}月的日期？</view>
+      <button data-clicked="yes" data-year="{{date.year}}"  data-month="{{date.month}}" data-date="{{clickedDate}}"  data-userOpenId="{{userOpenId}}" bindtap='dbAddOrUpdate' class="sub-button-pink">确认</button>
     </scroll-view>
 </view>
+<!-- <view wx:for="{{dbInqueryMenDateArr}}" wx:key="key" wx:item="item" wx:for-index="index">{{item._id}}</view>
+<view>{{indexUtils.isLogged(dbInqueryMenDateArr, date.year, date.month, 11)}}</view> -->
 </view>
 </view>

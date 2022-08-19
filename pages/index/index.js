@@ -15,19 +15,11 @@ Page({
    * 页面的初始数据
    */
   data: {
-    day:'', //记录day
     animationData:'',
     startclientY:'',
     isHidden: true,//底部遮罩
     ifStop: true, //阻止多次同方向滑动，多次动画效果
-    province: '',
-    city: '',
-    district: '',
-    todayWeather: '',
-    todayIcon: '',
-    userOpenId: '',
-    dbInqueryRes: '',
-    dbInqueryResArr: ''
+    dbInqueryMenDateArr:''
   },
 
   /**
@@ -50,13 +42,14 @@ Page({
 // 天气
   getLocationWeather: function(){
     var that = this;
+    // 获取城市
     wx.getLocation({
       type: 'wgs84',
       success (res) {
         latitude = res.latitude;
         longitude = res.longitude;
-        console.log('纬度' + latitude)
-        console.log('经度' + longitude)
+        //console.log('纬度' + latitude)
+        //console.log('经度' + longitude)
         var key = 'd3a8393e7d4241f29750a1b1735ed000';
         var url = 'https://devapi.qweather.com/v7/weather/now?location=' + longitude + ',' + latitude  + '&key='+key;
         console.log(url)
@@ -65,9 +58,9 @@ Page({
            data: {},
            method: 'GET',
            success: function (res) {
-             console.log(res);
+             //console.log(res);
              var todayWeather = res.data.now;//今天天气
-             console.log(todayWeather)
+             //console.log(todayWeather)
              that.setData({
                todayWeather: todayWeather,
                todayIcon: '../../icons/weather/' + todayWeather.icon + '.svg'
@@ -86,10 +79,13 @@ Page({
     qqmapsdk.reverseGeocoder({
       success: function(res) {
         console.log(res);
-        that.setData({
+        var location= {
           province: res.result.address_component.province,
           city: res.result.address_component.city,
           district: res.result.address_component.district  
+        }
+        that.setData({
+          location: location
         })
       }
      })
@@ -112,32 +108,67 @@ Page({
   },
   // db插入/更新
   dbAddOrUpdate: function(e) {
+    //隐藏弹出层
+    var animation = wx.createAnimation({
+      duration: 500,
+      timingFunction: "linear",
+      delay: 0
+    })
+    animation.translateY(0).step()
+    this.setData({
+      animationData: animation.export(),
+      ifStop: true
+    })
+    setTimeout(function () {
+      animation.translateY(600).step()
+      this.setData({
+        animationData: animation.export(),
+        isHidden: true
+      })
+    }.bind(this), 500)
     var userOpenId = e.currentTarget.dataset['userOpenId'];
     var menDate = {
-      _id: e.currentTarget.dataset['year']+''+e.currentTarget.dataset['month']+e.currentTarget.dataset['date'],
+      _id: e.currentTarget.dataset['year']+''+e.currentTarget.dataset['month'],
       year: e.currentTarget.dataset['year'],
       month: e.currentTarget.dataset['month'],
       date: e.currentTarget.dataset['date']
     }
+    console.log(menDate)
     mendates.where({
-      _openid: userOpenId,
+      _openid: userOpenId
     }).get({
       success: function(res) {
-        //console.log("res :" + res.data[0]._openid)
-        console.log("res :" + res.data)
-        console.log("res :" + res.data.length)
+        //console.log("res " + res.data.length)
+        // for(var i = 0; i < dateArr.length; i++)  {
+        //   isLogedFlag = (dateArr[i].year == menDate.year && dateArr[i].month == menDate.month) || isLogedFlag;
+        // }
+        console.log(res)
         if(res.data.length > 0) {
-          var dateArr = res.data[0].tags;
           console.log("dbUpdate")
-          console.log(dateArr)
-          mendates.doc(res.data[0]._id).update({
+          mendates.where({
+            '_openid': userOpenId,
+            'dateArr._id': menDate._id,
+          }).update({
             // data 传入需要局部更新的数据
             data: {
               // 只允许修改日
-              dateArr: _.push(menDate)
+              'dateArr.$.date': menDate.date
             },
             success: function(res) {
-              console.log(res.data)
+              console.log(res)
+              console.log("update: " + res.stats.updated)
+              if(res.stats.updated == 0) {
+                mendates.where({
+                  '_openid': userOpenId
+                }).update({
+                  data:{
+                    dateArr: _.push(menDate)
+                  },
+                  success: function(res){
+                    console.log(res.data)
+                  }
+                })
+              }
             }
           })
         } else{
@@ -145,21 +176,27 @@ Page({
           mendates.add({
             // data 字段表示需新增的 JSON 数据
             data: {
-              // _id: 'todo-identifiant-aleatoire', // 可选自定义 _id，在此处场景下用数据库自动分配的就可以了
+              // _id，数据库自动分配
               _openid: userOpenId,
               dateArr: [menDate],
             },
             success: function(res) {
               // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
-              console.log(res)
+              //console.log(res)
             }
           })
         }
       }
     })
+    wx.showToast({
+      title: '设置成功',
+      icon: 'succes',
+      duration: 1000,
+      mask: false
+      })
   },
   // db 查询
-  dbInquery: function (userOpenId) {
+  dbInquery: function () {
     var that = this;
     wx.getUserInfo({
       success: function(res) {
@@ -168,68 +205,68 @@ Page({
     wx.login({
       //成功放回
       success: function(res) {
+        console.log("res:" +   res.code)
         mendates.where({
           _openid: res.code
         })
         .get({
           success: function(res) {
-            var resultArr = new Array();
-            console.log(res.data)
-            // res.data 是包含以上定义的两条记录的数组
-            for (var i=0;i<res.data.length;i++){
-              resultArr.push(res.data[i].year + "-" + res.data[i].month + "-" + res.data[i].date);
+            //console.log(res.data)
+            // res.data 是包含以上定义的两条记录的数组\
+            if(res.data){
+              console.log(res.data[0].dateArr)
+              that.setData({
+                dbInqueryMenDateArr: res.data[0].dateArr
+              })
             }
-            that.setData({
-              dbInqueryRes: res.data,
-              dbInqueryResArr: resultArr
-            })
           }
         })
       }
     })
 },
+  //
   //初始化日历
   initCalendar: function (paramDate) {
     //星期
-    var days = ["日", "一", "二", "三", "四", "五", "六"]
+    var weekDays = ["日", "一", "二", "三", "四", "五", "六"]
     //日历数据的生成
     var calendars = Calendar.getCalendar(paramDate);
     var year = paramDate.getFullYear();
     var month = paramDate.getMonth() + 1;
     var date =  {
-      year,
-      month
+      year: year,
+      month: month
     }
     this.setData({
       date: date,
       calendars: calendars,
-      days: days,
+      weekDays: weekDays,
       preMonth: "<",   //大于、小于号不可以直接写在wxml中
       nextMonth: ">"
     });
   },
   //上个月
   preMonth: function () {
-    var dataYear = this.data.year;
-    var dataMonth = this.data.month - 2;//月是从0开始的
+    var dataYear = this.data.date.year;
+    var dataMonth = this.data.date.month - 2;//月是从0开始的
     var paramDate = Calendar.parseDate(dataYear, dataMonth);
     this.initCalendar(paramDate);
   },
   //下个月
   nextMonth: function () {
-    var dataYear = this.data.year;
-    var dataMonth = this.data.month;
+    var dataYear = this.data.date.year;
+    var dataMonth = this.data.date.month;
     var paramDate = Calendar.parseDate(dataYear, dataMonth);
     this.initCalendar(paramDate);
   },
   // 点击日期弹出划出层
   clickFun: function (e) {
-    var date = e.currentTarget.dataset['date'];
+    var clickedDate = e.currentTarget.dataset['clickedDate'];
     this.setData({
-      day: date
+      clickedDate: clickedDate
     })
     //console.log(this.data.ifStop,'显示');
-    if(!this.data.ifStop || date == "" ){
+    if(!this.data.ifStop || clickedDate == "" ){
       return;
     }
     // 显示遮罩层

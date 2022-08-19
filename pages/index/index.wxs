@@ -1,10 +1,18 @@
-var isContain = function(array, year, month, day) {
-  //数组里去找这个id，找得到返回true,找不到返回false
-  for(var i = 0; i < array.length; i++){
-    var ymd = array[i].split("-");
-    //if()
+  // 显示以往记录
+  function isLogged (arr, year, month, date){
+    
+    console.log(arr)
+    console.log(year)
+    if(!arr) return;
+    var flag = false;
+    for(var i = 0; i < arr.length; i++){
+      if(flag) break;
+      flag = flag || (arr[i].date == date &&  arr[i].month == month && arr[i].year == year)
+    }
+    return flag;
   }
-  
-  return list.indexOf(item) == -1 ? false : true
+
+
+  module.exports = {
+    isLogged: isLogged
   }
-  module.exports.isContain = isContain
