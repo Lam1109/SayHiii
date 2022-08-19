@@ -21,11 +21,10 @@ function dbAddOrUpdate(userOpenId, year, month, date, weather) {
       }
     }
   })
-  
 }
+
 function dbAdd (userOpenId, year, month, date, weather) {
   console.log("dbAdd")
-  // 这个月是否已经有记录
   mendates.add({
     // data 字段表示需新增的 JSON 数据
     data: {
@@ -64,6 +63,7 @@ function dbUpdate(userOpenId,  year, month, dateUpdate) {
     month: month
   }).get({
     success: function(res) {
+      console.log(res)
       mendates.doc(res.data[0]._id).update({
         // data 传入需要局部更新的数据
         data: {

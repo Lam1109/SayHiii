@@ -1,9 +1,14 @@
+wx.cloud.init({
+  env:'cloud1-4gzp9btcfd782c73'
+})
+const db = wx.cloud.database();
+const mendates = db.collection('mendates');
+const _ = db.command;
 var Calendar = require("../../service/Calendar.js");
 var QQMapWX = require("../../libs/qqmap-wx-jssdk.min.js")
 var qqmapsdk;
 var latitude, longitude;
 const app = getApp();
-var openId;
 
 Page({
   /**
@@ -19,7 +24,10 @@ Page({
     city: '',
     district: '',
     todayWeather: '',
-    todayIcon: ''
+    todayIcon: '',
+    userOpenId: '',
+    dbInqueryRes: '',
+    dbInqueryResArr: ''
   },
 
   /**
@@ -27,16 +35,19 @@ Page({
    */
   onLoad: function (options) {
     this.getUserOpenId();
+    this.dbInquery();
     this.initQQMap();
     this.getLocationWeather();
     let nowDate = new Date()
     this.setData({
-      today: nowDate.getDate()
+      today: nowDate.getDate(),
+      thisYear: nowDate.getFullYear(),
+      thisMonth:  nowDate.getMonth() + 1 
     })
     this.initCalendar(nowDate)//加载日历
   },
 
-
+// 天气
   getLocationWeather: function(){
     var that = this;
     wx.getLocation({
@@ -83,35 +94,114 @@ Page({
       }
      })
   },
-  // 获取 openid
+  // 获取 openid 
   getUserOpenId: function () {
     var that = this;
     wx.getUserInfo({
       success: function(res) {
-        // res.data 是包含以上定义的两条记录的数组
-        //console.log(res)
       }
     })
     wx.login({
       //成功放回
       success: function(res) {
-        // res.data 是包含以上定义的两条记录的数组
-       //console.log(res)
         that.setData({
-          openId: res.code
+          userOpenId: res.code
         })
       }
     })
   },
+  // db插入/更新
+  dbAddOrUpdate: function(e) {
+    var userOpenId = e.currentTarget.dataset['userOpenId'];
+    var menDate = {
+      _id: e.currentTarget.dataset['year']+''+e.currentTarget.dataset['month']+e.currentTarget.dataset['date'],
+      year: e.currentTarget.dataset['year'],
+      month: e.currentTarget.dataset['month'],
+      date: e.currentTarget.dataset['date']
+    }
+    mendates.where({
+      _openid: userOpenId,
+    }).get({
+      success: function(res) {
+        //console.log("res :" + res.data[0]._openid)
+        console.log("res :" + res.data)
+        console.log("res :" + res.data.length)
+        if(res.data.length > 0) {
+          var dateArr = res.data[0].tags;
+          console.log("dbUpdate")
+          console.log(dateArr)
+          mendates.doc(res.data[0]._id).update({
+            // data 传入需要局部更新的数据
+            data: {
+              // 只允许修改日
+              dateArr: _.push(menDate)
+            },
+            success: function(res) {
+              console.log(res.data)
+            }
+          })
+        } else{
+          console.log("dbAdd")
+          mendates.add({
+            // data 字段表示需新增的 JSON 数据
+            data: {
+              // _id: 'todo-identifiant-aleatoire', // 可选自定义 _id，在此处场景下用数据库自动分配的就可以了
+              _openid: userOpenId,
+              dateArr: [menDate],
+            },
+            success: function(res) {
+              // res 是一个对象，其中有 _id 字段标记刚创建的记录的 id
+              console.log(res)
+            }
+          })
+        }
+      }
+    })
+  },
+  // db 查询
+  dbInquery: function (userOpenId) {
+    var that = this;
+    wx.getUserInfo({
+      success: function(res) {
+      }
+    })
+    wx.login({
+      //成功放回
+      success: function(res) {
+        mendates.where({
+          _openid: res.code
+        })
+        .get({
+          success: function(res) {
+            var resultArr = new Array();
+            console.log(res.data)
+            // res.data 是包含以上定义的两条记录的数组
+            for (var i=0;i<res.data.length;i++){
+              resultArr.push(res.data[i].year + "-" + res.data[i].month + "-" + res.data[i].date);
+            }
+            that.setData({
+              dbInqueryRes: res.data,
+              dbInqueryResArr: resultArr
+            })
+          }
+        })
+      }
+    })
+},
   //初始化日历
   initCalendar: function (paramDate) {
     //星期
     var days = ["日", "一", "二", "三", "四", "五", "六"]
     //日历数据的生成
     var calendars = Calendar.getCalendar(paramDate);
+    var year = paramDate.getFullYear();
+    var month = paramDate.getMonth() + 1;
+    var date =  {
+      year,
+      month
+    }
     this.setData({
-      year: paramDate.getFullYear(),
-      month: paramDate.getMonth() + 1,
+      date: date,
       calendars: calendars,
       days: days,
       preMonth: "<",   //大于、小于号不可以直接写在wxml中
